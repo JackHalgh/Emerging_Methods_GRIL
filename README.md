@@ -23,31 +23,29 @@ library(irr)
 # Simulate multiple expert ratings
 set.seed(1)
 species_list <- c("Amphibians", "Arthropods", "Fishes", "Macrophytes",
-                  "Molluscs ")
+                  "Molluscs")
 
 method_list <- c("eDNA", "Drones", "Passive Acoustic Monitoring",
                  "Underwater Cameras", "Remote Sensing", "Conventional Methods")
 
-n_experts <- 5
+n_experts <- 6
 
 species_survey <- expand.grid(expert_id = 1:n_experts, species = species_list) %>%
-  mutate(body_size = runif(n(),1,5),
-         dispersal_potential = runif(n(),1,5),
-         sound_production = runif(n(),1,5),
-         diel_behaviour = runif(n(),1,5),
-         growing_season = runif(n(),1,5),
-         reproduction = runif(n(),1,5),
-         visual_observability = runif(n(),1,5)) %>%
+  mutate(body_size = runif(n(),1,6),
+         sound_production = runif(n(),1,6),
+         diel_behaviour = runif(n(),1,6),
+         growing_season = runif(n(),1,6),
+         reproduction = runif(n(),1,6),
+         visual_observability = runif(n(),1,6)) %>%
   clean_names()
 
 methods_survey <- expand.grid(expert_id = 1:n_experts, method = method_list) %>%
-  mutate(body_size = runif(n(),1,5),
-         dispersal_potential = runif(n(),1,5),
-         sound_production = runif(n(),1,5),
-         diel_behaviour = runif(n(),1,5),
-         growing_season = runif(n(),1,5),
-         reproduction = runif(n(),1,5),
-         visual_observability = runif(n(),1,5)) %>%
+  mutate(body_size = runif(n(),1,6),
+         sound_production = runif(n(),1,6),
+         diel_behaviour = runif(n(),1,6),
+         growing_season = runif(n(),1,6),
+         reproduction = runif(n(),1,6),
+         visual_observability = runif(n(),1,6)) %>%
   clean_names()
 
 #############################################
@@ -113,7 +111,7 @@ species_std <- scale(species_mat)
 methods_std <- scale(methods_mat)
 
 #############################################
-# 5. HEATMAPS
+# 6. HEATMAPS
 #############################################
 
 pheatmap(species_std,
@@ -138,15 +136,15 @@ pheatmap(methods_std,
 
 suitability <- species_std %*% t(methods_std)
 
-# Normalize 0-5
-suitability_norm <- apply(suitability, 2, function(x) (x - min(x)) / (max(x) - min(x)) * 5)
+# Normalize 0-6
+suitability_norm <- apply(suitability, 2, function(x) (x - min(x)) / (max(x) - min(x)) * 6)
 
 pheatmap(suitability_norm,
          cluster_rows = TRUE,
          cluster_cols = TRUE,
          fontsize_row = 9,
          fontsize_col = 10,
-         main = "Species × Method Suitability")
+         main = "")
 
 #############################################
 # 7. HIERARCHICAL CLUSTERING OF SPECIES
@@ -168,8 +166,7 @@ species_clusters_df <- data.frame(species = rownames(species_std),
 species_pca <- PCA(species_std, graph = FALSE)
 fviz_pca_biplot(species_pca,
                 label = "var",
-                repel = TRUE,
-                title = "PCA of Species Detectability Traits")
+                repel = TRUE)
 
 #############################################
 # 9. EXPORT RESULTS
